@@ -7,10 +7,17 @@ BreakThroughWidget::BreakThroughWidget(QWidget *parent): QWidget(parent)
     setBaseSize(600,600);
     setWindowTitle(trUtf8("Áttörés"));
 
+    newGameButton = new QPushButton(trUtf8("Új játék")); // új játék gomb
+    connect(newGameButton, SIGNAL(clicked()), this, SLOT(newGameButtonClicked()));
+
+    mainLayout = new QVBoxLayout();
+    mainLayout->addWidget(newGameButton);
+
     tableLayout = new QGridLayout(); // rácsos elhelyezkedés a játékmezőnek
     generateTable();
 
-    setLayout(tableLayout);
+    mainLayout->addLayout(tableLayout);
+    setLayout(mainLayout);
 
     newGame();
 }
@@ -30,6 +37,11 @@ void BreakThroughWidget::newGame()
         }
 
     stepCount = 0; // először az 1 lép
+}
+
+void BreakThroughWidget::newGameButtonClicked()
+{
+    newGame();
 }
 
 void BreakThroughWidget::generateTable()

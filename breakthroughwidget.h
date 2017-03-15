@@ -14,6 +14,7 @@ public:
 
 private slots:
     void buttonClicked();  //táblagombra kattintás eseménykezelője
+    void newGameButtonClicked(); // új játék gombra kattintás eseménykezelője
 
 private:
     void stepGame(int x, int y);  //játék léptetése
@@ -23,6 +24,8 @@ private:
 
     int stepCount; //játékos száma
     QGridLayout * tableLayout;  //gombrács
+    QVBoxLayout * mainLayout;
+    QPushButton* newGameButton;
     QVector< QVector <QPushButton* > > buttonTable; //gombtábla
     int** gameTable;  //játéktábla
 };
