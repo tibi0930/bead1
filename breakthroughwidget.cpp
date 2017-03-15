@@ -1,5 +1,5 @@
 #include "breakthroughwidget.h"
-#include <QString>
+#include <QMessageBox>
 
 BreakThroughWidget::BreakThroughWidget(QWidget *parent): QWidget(parent)
 {
@@ -64,8 +64,6 @@ void BreakThroughWidget::buttonClicked()
 
 void BreakThroughWidget::stepGame(int x, int y)
 {
-    //gameTable[x][y] = playerNr; // pozíció rögzítése
-
     if ((stepCount % 2 == 0) && buttonTable[x][y]->text() == "1"){
         if(x > 0){
             if(buttonTable[x-1][y]->text()==""){
@@ -73,16 +71,19 @@ void BreakThroughWidget::stepGame(int x, int y)
                     buttonTable[x-1][y-1]->setText("1");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
                 else if((y< buttonTable[x].size()-1) && buttonTable[x-1][y+1]->text()=="2"){
                     buttonTable[x-1][y+1]->setText("1");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
                 else{
                     buttonTable[x-1][y]->setText("1");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
              }
 
@@ -91,11 +92,13 @@ void BreakThroughWidget::stepGame(int x, int y)
                     buttonTable[x-1][y-1]->setText("1");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
                 else if((y< buttonTable[x].size()-1) && buttonTable[x-1][y+1]->text()=="2"){
                     buttonTable[x-1][y+1]->setText("1");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
              }
           }
@@ -109,16 +112,19 @@ void BreakThroughWidget::stepGame(int x, int y)
                     buttonTable[x+1][y-1]->setText("2");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
                 else if((y< buttonTable[x].size()-1) && buttonTable[x+1][y+1]->text()=="1"){
                     buttonTable[x+1][y+1]->setText("2");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
                 else{
                     buttonTable[x+1][y]->setText("2");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
             }
 
@@ -127,17 +133,40 @@ void BreakThroughWidget::stepGame(int x, int y)
                     buttonTable[x+1][y-1]->setText("2");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
                 else if((y< buttonTable[x].size()-1) && buttonTable[x+1][y+1]->text()=="1"){
                     buttonTable[x+1][y+1]->setText("2");
                     buttonTable[x][y]->setText("");
                     stepCount++;
+                    checkGame();
                 }
             }
         }
      }
+    checkGame();
+}
 
-
-
-    //checkGame();
+void BreakThroughWidget::checkGame(){
+    int won=0;
+    if(stepCount % 2 != 0){
+        for(int j=0; j<buttonTable.size()-1; ++j){
+            if(buttonTable[0][j]->text() == "1")
+                won = 1;
+        }
+    }
+    if(stepCount % 2 == 0){
+        for(int j=0; j<buttonTable.size()-1; ++j){
+            if(buttonTable[buttonTable.size()-1][j]->text() == "2")
+                won = 2;
+        }
+    }
+    if (won==1){
+        QMessageBox::information(this, trUtf8("Játék vége"), trUtf8("Az egyes játékos nyert"));
+        newGame();
+    }
+    else if(won==2){
+        QMessageBox::information(this, trUtf8("Játék vége"), trUtf8("A kettes játékos nyert"));
+        newGame();
+    }
 }

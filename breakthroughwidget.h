@@ -17,7 +17,7 @@ private slots:
 
 private:
     void stepGame(int x, int y);  //játék léptetése
-    //void checkGame();  //vége van-e a játéknak
+    void checkGame();  //vége van-e a játéknak
     void generateTable(); //tábla létrehozása
     void newGame();  //új játék kezdése
 
