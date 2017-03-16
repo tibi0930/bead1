@@ -16,7 +16,7 @@ public:
 private:
     QLabel *_label; // címke
     QSpinBox *_spinBox; // számbeállító
-    QPushButton *_okButton;
+    QPushButton *_okButton;  //gombok
     QPushButton *_cancelButton;
 };
 

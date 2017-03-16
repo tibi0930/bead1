@@ -1,11 +1,12 @@
 #include "gridsizedialog.h"
 #include <QHBoxLayout>
 
-GridSizeDialog::GridSizeDialog(QWidget *parent) :
-    QDialog(parent)
+//létrehozunk egy dialógus ablakot a tábla méretének megadásához
+//konstruktorban megadjuk az ablakon lévő objektumokat
+GridSizeDialog::GridSizeDialog(QWidget *parent) :QDialog(parent)
 {
-    setFixedSize(250,120);
-    setWindowTitle(trUtf8("Beállítások"));
+    setFixedSize(250,120); //tábla méret
+    setWindowTitle(trUtf8("Beállítások")); //ablak címe
     setModal(true); // előugró ablak, rögtön megkapja a fókuszt
 
     _label = new QLabel(trUtf8("Tábla mérete: "));
@@ -21,6 +22,7 @@ GridSizeDialog::GridSizeDialog(QWidget *parent) :
     connect(_okButton, SIGNAL(clicked()), this, SLOT(accept())); // elfogadás állapota
     connect(_cancelButton, SIGNAL(clicked()), this, SLOT(reject())); // elvetés állapota
 
+    //Ablak elrendezés
     QHBoxLayout *upperLayout = new QHBoxLayout();
     upperLayout->addWidget(_label);
     upperLayout->addWidget(_spinBox);
