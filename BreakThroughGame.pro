@@ -13,6 +13,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        breakthroughwidget.cpp
+        breakthroughwidget.cpp \
+    gridsizedialog.cpp
 
-HEADERS  += breakthroughwidget.h
+HEADERS  += breakthroughwidget.h \
+    gridsizedialog.h

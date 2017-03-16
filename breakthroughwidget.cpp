@@ -8,26 +8,32 @@ BreakThroughWidget::BreakThroughWidget(QWidget *parent): QWidget(parent)
     setWindowTitle(trUtf8("Áttörés"));
 
     newGameButton = new QPushButton(trUtf8("Új játék")); // új játék gomb
-    connect(newGameButton, SIGNAL(clicked()), this, SLOT(newGameButtonClicked()));
+    //connect(newGameButton, SIGNAL(clicked()), this, SLOT(newGameButtonClicked()));
 
     mainLayout = new QVBoxLayout();
     mainLayout->addWidget(newGameButton);
 
     tableLayout = new QGridLayout(); // rácsos elhelyezkedés a játékmezőnek
-    generateTable();
+    //generateTable();
 
     mainLayout->addLayout(tableLayout);
     setLayout(mainLayout);
 
-    newGame();
+    _gridSizeDialog = new GridSizeDialog();
+    connect(newGameButton, SIGNAL(clicked()), _gridSizeDialog, SLOT(exec())); // méretező ablak megjelenítése gombnyomásra
+    connect(_gridSizeDialog, SIGNAL(accepted()), this, SLOT(resizeGrid())); // átméretezés a dialógus elfogadására
+    //newGame();
 }
 
-void BreakThroughWidget::newGame()
+BreakThroughWidget::~BreakThroughWidget(){
+    delete _gridSizeDialog;
+}
+
+/*void BreakThroughWidget::newGame()
 {
     for (int i = 0; i < 6; ++i)
         for (int j = 0; j < 6; ++j)
         {
-            gameTable[i][j] = 0; // a játékosok pozícióit töröljük
             buttonTable[i][j]->setText(""); // a szöveget töröljük
             buttonTable[0][j]->setText("2");
             buttonTable[1][j]->setText("2");
@@ -37,21 +43,19 @@ void BreakThroughWidget::newGame()
         }
 
     stepCount = 0; // először az 1 lép
-}
+}*/
 
-void BreakThroughWidget::newGameButtonClicked()
+/*void BreakThroughWidget::newGameButtonClicked()
 {
     newGame();
 }
-
-void BreakThroughWidget::generateTable()
+*/
+/*void BreakThroughWidget::generateTable()
 {
-    gameTable = new int*[6];
     buttonTable.resize(6);
 
     for (int i = 0; i < 6; ++i)
     {
-        gameTable[i] = new int[6];
         buttonTable[i].resize(6);
         for (int j = 0; j < 6; ++j)
         {
@@ -64,14 +68,57 @@ void BreakThroughWidget::generateTable()
             connect(buttonTable[i][j], SIGNAL(clicked()), this, SLOT(buttonClicked()));
         }
     }
+}*/
+
+
+void BreakThroughWidget::resizeGrid(){
+    foreach(QVector<QPushButton*> rows, buttonTable){
+       foreach(QPushButton* button, rows){
+          tableLayout->removeWidget(button);
+          delete button;
+       }
+    }
+    buttonTable.clear();
+
+    int meret = _gridSizeDialog->gridSize();
+    buttonTable.resize(meret);
+    for (int i = 0; i < meret; ++i)
+    {
+        buttonTable[i].resize(meret);
+        for (int j = 0; j < meret; ++j)
+        {
+            buttonTable[i][j]= new QPushButton( this);
+            buttonTable[i][j]->setFont(QFont("Times New Roman", 50, QFont::Bold));
+            buttonTable[i][j]->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+            tableLayout->addWidget(buttonTable[i][j], i, j); // gombok felvétele az elhelyezésbe
+
+            connect(buttonTable[i][j], SIGNAL(clicked()), this, SLOT(buttonClicked()));
+        }
+    }
+
+    for (int i = 0; i < meret; ++i)
+        for (int j = 0; j < meret; ++j)
+        {
+            buttonTable[i][j]->setText(""); // a szöveget töröljük
+            buttonTable[0][j]->setText("2");
+            buttonTable[1][j]->setText("2");
+            buttonTable[buttonTable.size()-1][j]->setText("1");
+            buttonTable[buttonTable.size()-2][j]->setText("1");
+            buttonTable[i][j]->setEnabled(true); // bekapcsoljuk a gombot
+        }
+
+    stepCount = 0; // először az 1 lép
 }
+
+
 
 void BreakThroughWidget::buttonClicked()
 {
     QPushButton* senderButton = dynamic_cast <QPushButton*> (QObject::sender());
     int location = tableLayout->indexOf(senderButton);
     //senderButton->setText(QString::number(location));
-    stepGame(location / 6, location % 6);
+    stepGame(location / _gridSizeDialog->gridSize(), location % _gridSizeDialog->gridSize());
 }
 
 void BreakThroughWidget::stepGame(int x, int y)
@@ -175,10 +222,14 @@ void BreakThroughWidget::checkGame(){
     }
     if (won==1){
         QMessageBox::information(this, trUtf8("Játék vége"), trUtf8("Az egyes játékos nyert"));
-        newGame();
+        _gridSizeDialog->exec();
+        resizeGrid();
+        //newGame();
     }
     else if(won==2){
         QMessageBox::information(this, trUtf8("Játék vége"), trUtf8("A kettes játékos nyert"));
-        newGame();
+        _gridSizeDialog->exec();
+        resizeGrid();
+        //newGame();
     }
 }
